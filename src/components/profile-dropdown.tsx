@@ -18,11 +18,11 @@ export default function ProfileDropdown({
                         <Avatar />
                         {user?.user_metadata?.full_name}
                     </summary>
-                    <ul className="p-2 w-full">
+                    <ul className="p-2 w-full z-40">
                         <li><Link href={"/profile"}>Profile</Link></li>
                         <li></li>
                         <li><LogoutButton /></li>
-                        <li><Link href={"/manage-plan"}>Manage Plan</Link></li>
+                        <li><Link href={"/pricing"}>Pricing</Link></li>
                     </ul>
                 </details>
             </li>

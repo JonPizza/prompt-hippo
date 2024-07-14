@@ -2,6 +2,7 @@ import { createSupabaseServerComponentClient } from "@/lib/supabase/server-clien
 import LoginButton from "./login-button";
 import LogoutButton from "./logout-button";
 import ProfileDropdownServer from "./profile-server";
+import Link from "next/link";
 
 export default async function NavBar() {
   const {
@@ -15,7 +16,7 @@ export default async function NavBar() {
     <div className="w-full bg-base-300" style={{zIndex: 999}}>
       <div className="max-w-screen-xl mx-auto navbar">
         <div className="navbar-start">
-          <a className="btn btn-ghost text-xl">JonPizza</a>
+          <Link className="btn btn-ghost text-xl" href={"/"}>JonPizza</Link>
         </div>
         <div className="navbar-end">
           {user ? (

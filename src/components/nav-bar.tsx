@@ -1,0 +1,35 @@
+import { createSupabaseServerComponentClient } from "@/lib/supabase/server-client";
+import LoginButton from "./login-button";
+import LogoutButton from "./logout-button";
+import ProfileDropdownServer from "./profile-server";
+
+export default async function NavBar() {
+  const {
+    data: { session },
+    error,
+  } = await createSupabaseServerComponentClient().auth.getSession();
+
+  const user = session?.user;
+
+  return (
+    <div className="w-full bg-base-300" style={{zIndex: 999}}>
+      <div className="max-w-screen-xl mx-auto navbar">
+        <div className="navbar-start">
+          <a className="btn btn-ghost text-xl">JonPizza</a>
+        </div>
+        <div className="navbar-end">
+          {user ? (
+            <>
+              <ProfileDropdownServer />
+            </>
+          ) : (
+            <>
+              <LoginButton />
+              <button className="ml-4 btn btn-primary">Get Demo</button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

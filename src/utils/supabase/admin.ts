@@ -8,18 +8,13 @@ type Product = Tables<'products'>;
 type Price = Tables<'prices'>;
 
 // Change to control trial period length
-const TRIAL_PERIOD_DAYS = 0;
+const TRIAL_PERIOD_DAYS = 14;
 
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
 // as it has admin privileges and overwrites RLS policies!
-console.log(process.env)
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!supabaseKey) {
-  throw new Error('SUPABASE_SERVICE_ROLE_KEY environment variable is required.');
-}
 const supabaseAdmin = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  supabaseKey
+  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
 const upsertProductRecord = async (product: Stripe.Product) => {
@@ -190,6 +185,27 @@ const createOrRetrieveCustomer = async ({
   }
 };
 
+const getUserPlan = async ({
+  uuid
+}: {
+  uuid: string;
+}) => {
+  // Check if the customer already exists in Supabase
+  const { data: foundSubscription, error: queryError } =
+    await supabaseAdmin
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', uuid)
+      .maybeSingle();
+
+  if (queryError) {
+    return {status: 'Free', type: 'Free'};
+  }
+
+  console.log(foundSubscription);
+  return foundSubscription;
+};
+
 /**
  * Copies the billing details from the payment method to the customer object.
  */
@@ -293,5 +309,6 @@ export {
   deleteProductRecord,
   deletePriceRecord,
   createOrRetrieveCustomer,
+  getUserPlan,
   manageSubscriptionStatusChange
 };

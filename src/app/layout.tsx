@@ -17,9 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className + " bg-base-300 min-h-screen"}>
+      <body className={inter.className + " bg-base-100 min-h-screen"}>
         <NavBar />
-        <div>
+        <div className="max-w-screen-lg mx-auto p-12">
           {children}
         </div>
       </body>

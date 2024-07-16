@@ -156,7 +156,7 @@ export default function Pricing({ user, products, subscription }: Props) {
                 <div
                   key={product.id}
                   className={cn(
-                    'flex flex-col rounded-lg shadow-sm divide-y divide-zinc-600 bg-base-200',
+                    'flex flex-col rounded-lg shadow-sm divide-y bg-base-100 border',
                     {
                       'border border-pink-500': subscription
                         ? product.name === subscription?.prices?.products?.name
@@ -185,7 +185,7 @@ export default function Pricing({ user, products, subscription }: Props) {
                       type="button"
                       loading={priceIdLoading === price.id}
                       onClick={() => handleStripeCheckout(price)}
-                      className="block w-full py-2 mt-8 text-sm font-semibold text-center text-white rounded-md hover:bg-zinc-900"
+                      className="block w-full py-2 mt-8 text-sm font-semibold text-center bg-primary"
                     >
                       {subscription ? 'Manage' : 'Subscribe'}
                     </Button>

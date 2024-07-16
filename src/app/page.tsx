@@ -1,7 +1,7 @@
 export default async function Home() {
   return (
     <>
-      <div className="bg-base-300 relative isolate px-6 lg:px-8">
+      <div className="bg-base-100 relative isolate px-6 lg:px-8">
         <div className="mx-auto max-w-2xl pb-32 pt-24">
           <div className="hidden sm:mb-8 sm:flex sm:justify-center">
             <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">

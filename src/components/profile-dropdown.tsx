@@ -11,21 +11,17 @@ export default function ProfileDropdown({
     const user = session?.user;
 
     return (
-        <ul className="menu menu-horizontal px-1">
-            <li>
-                <details>
-                    <summary>
-                        <Avatar />
-                        {user?.user_metadata?.full_name}
-                    </summary>
-                    <ul className="p-2 w-full z-40">
-                        <li><Link href={"/profile"}>Profile</Link></li>
-                        <li></li>
-                        <li><LogoutButton /></li>
-                        <li><Link href={"/pricing"}>Pricing</Link></li>
-                    </ul>
-                </details>
-            </li>
-        </ul>
+        <div className="dropdown dropdown-end">
+            <summary tabIndex={0} role="button" className="btn m-1">
+                <Avatar />
+                {user?.user_metadata?.full_name}
+            </summary>
+            <ul tabIndex={0} className="dropdown-content text-xl menu border bg-base-100 rounded-box z-[1] min-w-52 p-2">
+                <li><Link href="/profile">Profile</Link></li>
+                <li></li>
+                <li><LogoutButton /></li>
+                <li><Link href="/pricing">Pricing</Link></li>
+            </ul>
+        </div>
     );
 }

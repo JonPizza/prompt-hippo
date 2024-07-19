@@ -46,7 +46,7 @@ const upsertPriceRecord = async (
     active: price.active,
     currency: price.currency,
     type: price.type,
-    description: price.description ?? null,
+    description: 'Configure in supabase db!',
     unit_amount: price.unit_amount ?? null,
     interval: price.recurring?.interval ?? null,
     interval_count: price.recurring?.interval_count ?? null,

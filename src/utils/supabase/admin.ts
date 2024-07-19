@@ -202,8 +202,18 @@ const getUserPlan = async ({
     return {status: 'Free', type: 'Free'};
   }
 
-  console.log(foundSubscription);
-  return foundSubscription;
+  const { data: priceDetails, error: queeryError } =
+    await supabaseAdmin
+      .from('prices')
+      .select('*')
+      .eq('id', foundSubscription?.price_id || '')
+      .maybeSingle();
+
+  if (queeryError) {
+    return {status: 'Unknown', type: 'Unknown'};
+  }
+
+  return {status: foundSubscription?.status, type: priceDetails?.description};
 };
 
 /**

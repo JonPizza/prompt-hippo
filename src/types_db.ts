@@ -40,6 +40,7 @@ export interface Database {
           interval: Database["public"]["Enums"]["pricing_plan_interval"] | null
           interval_count: number | null
           product_id: string | null
+          description: string
           trial_period_days: number | null
           type: Database["public"]["Enums"]["pricing_type"] | null
           unit_amount: number | null

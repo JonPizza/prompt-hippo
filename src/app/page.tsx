@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default async function Home() {
   return (
     <>
@@ -20,12 +22,12 @@ export default async function Home() {
               So far, so good. I'm making a template for all my future operations.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="#"
+              <Link
+                href="/app"
                 className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-secondary"
               >
                 Get started
-              </a>
+              </Link>
               <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
                 Learn more <span aria-hidden="true">→</span>
               </a>

@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
   const user = session?.user;
 
   // protects the "/account" route and its sub-routes
-  if (!user && request.nextUrl.pathname.startsWith("/account")) {
+  if (!user && request.nextUrl.pathname.startsWith("/app")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -25,5 +25,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/account/:path*"],
+  matcher: ["/app", "/app/:path*"],
 };

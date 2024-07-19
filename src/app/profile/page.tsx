@@ -13,7 +13,7 @@ export default async function ProfilePage() {
 
     return (
         <>
-            <h1 className="text-4xl font-bold">
+            <h1 className="text-4xl">
                 Profile
             </h1>
             <h1 className="text-xl break-words">

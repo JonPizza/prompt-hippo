@@ -26,7 +26,7 @@ export default async function NavBar() {
           ) : (
             <>
               <LoginButton />
-              <button className="ml-4 btn btn-primary">Get Demo</button>
+              <button className="ml-4 btn btn-secondary">Register</button>
             </>
           )}
         </div>

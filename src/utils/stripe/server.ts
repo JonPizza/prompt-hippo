@@ -11,6 +11,8 @@ import {
 } from '@/utils/helpers';
 import { Tables } from '@/types_db';
 
+import { useRouter } from 'next/navigation';
+
 type Price = Tables<'prices'>;
 
 type CheckoutResponse = {
@@ -20,7 +22,7 @@ type CheckoutResponse = {
 
 export async function checkoutWithStripe(
   price: Price,
-  redirectPath: string = '/account'
+  redirectPath: string = '/profile'
 ): Promise<CheckoutResponse> {
   try {
     // Get the user from Supabase auth
@@ -149,18 +151,25 @@ export async function createStripePortal(currentPath: string) {
       throw new Error('Could not get customer.');
     }
 
+    let url: string | null = null;
+
     try {
-      const { url } = await stripe.billingPortal.sessions.create({
+      url = await stripe.billingPortal.sessions.create({
         customer,
-        return_url: getURL('/account')
-      });
+        return_url: getURL('/profile')
+      }).then((session) => session.url);
       if (!url) {
         throw new Error('Could not create billing portal');
       }
-      return url;
     } catch (err) {
       console.error(err);
       throw new Error('Could not create billing portal');
+    } finally {
+      if (url) {
+        return url;
+      } else {
+        throw new Error('Could not create billing portal');
+      }
     }
   } catch (error) {
     if (error instanceof Error) {

@@ -1,6 +1,7 @@
 import { createSupabaseServerComponentClient } from "@/lib/supabase/server-client";
 import { getUserPlan } from "@/utils/supabase/admin";
 import Link from "next/link";
+import PortalButton from "../PortalButton/PortalButton";
 
 interface CoolColorfulTextProps {
     status: string;
@@ -34,9 +35,7 @@ export default async function ProfileDropdownServer() {
                         Plan status: <CoolColorfulText status={plan?.status || ''} />
                     </div>
                     <div className="card-actions justify-end">
-                        <Link href="pricing">
-                            <button className="btn btn-secondary">Change Plan</button>
-                        </Link>
+                        <PortalButton />
                     </div>
                 </div>
             </div>

@@ -3,11 +3,11 @@
 import Button from '@/components/payment/ui/Button';
 import type { Tables } from '@/types_db';
 import { getStripe } from '@/utils/stripe/client';
-import { checkoutWithStripe } from '@/utils/stripe/server';
+import { checkoutWithStripe, createStripePortal } from '@/utils/stripe/server';
 import { getErrorRedirect } from '@/utils/helpers';
 import { User } from '@supabase/supabase-js';
 import cn from 'classnames';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, redirect } from 'next/navigation';
 import { useState } from 'react';
 
 type Subscription = Tables<'subscriptions'>;
@@ -88,7 +88,7 @@ export default function Pricing({ user, products, subscription }: Props) {
           <p className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
             No subscription pricing plans found. Create them in your{' '}
             <a
-              className="text-pink-500 underline"
+              className="text-indigo-500 underline"
               href="https://dashboard.stripe.com/products"
               rel="noopener noreferrer"
               target="_blank"
@@ -158,7 +158,7 @@ export default function Pricing({ user, products, subscription }: Props) {
                   className={cn(
                     'flex flex-col rounded-lg shadow-sm divide-y bg-base-100 border',
                     {
-                      'border border-pink-500': subscription
+                      'border': subscription
                         ? product.name === subscription?.prices?.products?.name
                         : product.name === 'Freelancer'
                     },
@@ -180,15 +180,12 @@ export default function Pricing({ user, products, subscription }: Props) {
                         /{billingInterval}
                       </span>
                     </p>
-                    <Button
-                      variant="slim"
-                      type="button"
-                      loading={priceIdLoading === price.id}
+                    <div 
+                      className="w-full py-2 mt-8 text-lg font-semibold text-center btn text-white bg-indigo-600 hover:bg-indigo-800"
                       onClick={() => handleStripeCheckout(price)}
-                      className="block w-full py-2 mt-8 text-sm font-semibold text-center bg-primary"
                     >
-                      {subscription ? 'Manage' : 'Subscribe'}
-                    </Button>
+                      Subscribe
+                    </div>
                   </div>
                 </div>
               );

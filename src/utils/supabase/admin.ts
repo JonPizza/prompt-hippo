@@ -8,7 +8,7 @@ type Product = Tables<'products'>;
 type Price = Tables<'prices'>;
 
 // Change to control trial period length
-const TRIAL_PERIOD_DAYS = 14;
+const TRIAL_PERIOD_DAYS = 7;
 
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
 // as it has admin privileges and overwrites RLS policies!
@@ -214,7 +214,7 @@ const getUserPlan = async ({
     return {status: 'Unknown', type: 'Unknown'};
   }
 
-  return {status: foundSubscription?.status, type: priceDetails?.description};
+  return {status: foundSubscription?.status, type: priceDetails?.description, stripe_customer_id: foundSubscription?.user_id};
 };
 
 /**

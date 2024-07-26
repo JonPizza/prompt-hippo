@@ -199,9 +199,10 @@ const getUserPlan = async ({
       .eq('user_id', uuid)
       .maybeSingle();
 
-  if (queryError) {
+  if (queryError || foundSubscription == null) {
     return {status: 'Free', type: 'Free'};
   }
+  console.log(foundSubscription)
 
   const { data: priceDetails, error: queeryError } =
     await supabaseAdmin
@@ -214,7 +215,8 @@ const getUserPlan = async ({
     return {status: 'Unknown', type: 'Unknown'};
   }
 
-  return {status: foundSubscription?.status, type: priceDetails?.description, stripe_customer_id: foundSubscription?.user_id};
+
+  return { status: foundSubscription?.status, type: priceDetails?.description };
 };
 
 /**

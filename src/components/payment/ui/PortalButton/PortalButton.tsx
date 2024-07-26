@@ -11,9 +11,7 @@ export default async function PortalButton() {
     const plan = await getUserPlan({ uuid: session?.user?.id || '' });
     console.log(plan);
 
-    const customerId = plan?.stripe_customer_id;
-
     return (
-        <PortalButtonClient customerId={customerId || ''} />
+        <PortalButtonClient />
     )
 }

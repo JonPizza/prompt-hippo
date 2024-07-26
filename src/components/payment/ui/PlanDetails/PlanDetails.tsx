@@ -35,7 +35,7 @@ export default async function ProfileDropdownServer() {
                         Plan status: <CoolColorfulText status={plan?.status || ''} />
                     </div>
                     <div className="card-actions justify-end">
-                        <PortalButton />
+                        {plan?.status === 'active' ? <PortalButton /> : <Link href="/pricing" className="btn btn-secondary">Upgrade Plan</Link>}
                     </div>
                 </div>
             </div>

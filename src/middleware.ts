@@ -16,9 +16,9 @@ export async function middleware(request: NextRequest) {
 
   const user = session?.user;
 
-  // protects the "/account" route and its sub-routes
+  // protects the "/app" route and its sub-routes
   if (!user && request.nextUrl.pathname.startsWith("/app")) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   return response;

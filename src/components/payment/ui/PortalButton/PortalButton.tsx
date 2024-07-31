@@ -9,7 +9,6 @@ export default async function PortalButton() {
     } = await createSupabaseServerComponentClient().auth.getSession();
 
     const plan = await getUserPlan({ uuid: session?.user?.id || '' });
-    console.log(plan);
 
     return (
         <PortalButtonClient />

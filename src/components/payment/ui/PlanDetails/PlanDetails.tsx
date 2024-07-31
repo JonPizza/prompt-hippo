@@ -25,7 +25,6 @@ export default async function ProfileDropdownServer() {
     } = await createSupabaseServerComponentClient().auth.getSession();
 
     const plan = await getUserPlan({ uuid: session?.user?.id || '' });
-    console.log(plan);
     return (
         <div>
             <div className="card border text-primary-content w-96">

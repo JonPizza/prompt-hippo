@@ -13,10 +13,10 @@ export default async function NavBar() {
   const user = session?.user;
 
   return (
-    <div className="w-full bg-base-100" style={{zIndex: 999}}>
+    <div className="w-full bg-base-100" style={{ zIndex: 999 }}>
       <div className="max-w-screen-xl mx-auto navbar">
         <div className="navbar-start">
-          <Link className="btn btn-ghost text-xl" href={"/"}>JonPizza</Link>
+          <Link className="btn btn-ghost text-xl" href={"/"}>Prompt Hippo 🦛</Link>
         </div>
         <div className="navbar-end">
           {user ? (
@@ -26,7 +26,9 @@ export default async function NavBar() {
           ) : (
             <>
               <LoginButton />
-              <button className="ml-4 btn btn-secondary">Register</button>
+              <Link href={"/app"}>
+                <button className="ml-4 btn btn-secondary">Get Started</button>
+              </Link>
             </>
           )}
         </div>

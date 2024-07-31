@@ -202,8 +202,7 @@ const getUserPlan = async ({
   if (queryError || foundSubscription == null) {
     return {status: 'Free', type: 'Free'};
   }
-  console.log(foundSubscription)
-
+  
   const { data: priceDetails, error: queeryError } =
     await supabaseAdmin
       .from('prices')

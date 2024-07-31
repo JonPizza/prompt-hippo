@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../../globals.css";
 import NavBar from "@/components/nav-bar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "JonPizza",
-  description: "JonPizza oauth",
+  title: "Prompt Hippo 🦛",
+  description: "Prompt Hippo",
 };
 
 export default function RootLayout({

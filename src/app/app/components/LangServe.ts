@@ -32,7 +32,7 @@ export async function runAllColumns(langServeUrl, data) {
                 resolve([columnIdx, result, timeToComplete]);
             } catch (error) {
                 console.error(`Error in column ${columnIdx}:`, error);
-                reject([columnIdx, 'Error occurred!!', (Date.now() - startTime) / 1000]);
+                resolve([columnIdx, 'Error occurred!!', (Date.now() - startTime) / 1000]);
             }
         });
     });

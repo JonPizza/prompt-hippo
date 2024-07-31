@@ -22,7 +22,7 @@ export default async function Home() {
               <b className="text-primary">Use Science 🦛✅</b>
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Side-by-side prompt testing suite to ensure robustness, reliability, and safety of your prompts.
+              Side-by-side LLM prompt testing suite to ensure robustness, reliability, and safety of your prompts.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link

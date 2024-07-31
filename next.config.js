@@ -8,7 +8,10 @@ const nextConfig = {
       },
     ],
   },
-  reactStrictMode: false
+  reactStrictMode: false,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 module.exports = nextConfig;

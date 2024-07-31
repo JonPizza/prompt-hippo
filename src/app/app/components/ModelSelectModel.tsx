@@ -53,9 +53,11 @@ export default function ModelSelectModel(props: {
                 <div className="modal-box">
                     <h3 className="text-lg py-2 font-bold">Free</h3>
                     <div className="flex flex-wrap gap-2">
-                        {freeModels.map((model) => {
+                        {freeModels.map((model, idx) => {
                             return (
-                                <button onClick={() => { props.handleModelChange(model.name, model.langserve); document.getElementById('my_modal_2').close() }}>
+                                <button 
+                                    key={idx}
+                                    onClick={() => { props.handleModelChange(model.name, model.langserve); document.getElementById('my_modal_2').close() }}>
                                     <div className="border rounded-xl shadow-sm font-normal p-2 flex gap-x-2 w-fit hover:bg-base-200">
                                         <div>
                                             {model.name}

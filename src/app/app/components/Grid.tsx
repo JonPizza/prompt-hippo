@@ -40,7 +40,7 @@ const Grid: React.FC<GridProps> = ({ paid, validators, children }) => {
     const [results, setResults] = useState([]);
 
     const [model, setModel] = useState('gpt-4o-mini');
-    const [langserveUrl, setLangserveUrl] = useState('http://0.0.0.0:8000/gpt-4o-mini/invoke');
+    const [langserveUrl, setLangserveUrl] = useState('https://free.prompthippo.net/gpt-4o-mini/invoke');
 
     const handleChange = useCallback((rowIndex: number, colIndex: number, value: string) => {
         setMessages((prevData) => {

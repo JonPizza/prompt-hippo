@@ -53,6 +53,8 @@ const InputBox: React.FC<InputBoxProps> = memo(({ value, rowIdx, onChange, handl
     );
 });
 
+InputBox.displayName = 'InputBox';
+
 export default function InputRow(props: {
     rowData: { type: string; messages: string[]; },
     rowIdx: number,

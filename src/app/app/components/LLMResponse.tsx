@@ -75,4 +75,6 @@ const LLMResponse = React.memo(
     }
 );
 
+LLMResponse.displayName = 'LLMResponse';
+
 export default LLMResponse;

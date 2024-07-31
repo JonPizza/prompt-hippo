@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-const baseUrl = 'http://0.0.0.0:8000'
+const baseUrl = 'https://free.prompthippo.net'
 
 export default function ModelSelectModel(props: {
     handleModelChange: Function,

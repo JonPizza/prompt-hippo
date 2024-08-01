@@ -12,7 +12,7 @@ export default async function AppPage() {
 
     return (
         <div className="w-full">
-            <GridWithValidators paid={plan?.type?.startsWith('Pro')} />
+            <GridWithValidators paid={true || plan?.type?.startsWith('Pro')} />
         </div>
     );
 }

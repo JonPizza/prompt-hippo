@@ -42,7 +42,7 @@ export default async function ProfilePage() {
             ))}
             {projects.length > 0 ? (<br className="clear-both"></br>) : (<></>)}
             <Link href={"/app"} className="btn btn-secondary m-2">
-                Create New Project
+                Start New Project
             </Link>
             <Divider />
             <PlanDetails />
@@ -50,13 +50,17 @@ export default async function ProfilePage() {
             <div className="prose m-8">
                 <h3 className="mb-0">Quick Links</h3>
                 <div>
-                    &bull; <Link href={"/app"}>To Prompt Hippo 🦛</Link>
-                </div>
-                <div>
                     &bull; <Link href={"/docs"}>Documentation + Blog</Link>
                 </div>
                 <div>
                     &bull; <Link href={"/pricing"}>Pricing</Link>
+                </div>
+                <h3 className="mb-0">Prompt Hippo Support</h3>
+                <div>
+                    &bull; <Link href={"mailto:york.jon.2005@gmail.com"}>york.jon.2005@gmail.com</Link>
+                </div>
+                <div>
+                    &bull; Twitter/X: <Link href={"https://twitter.com/jonyorked"}>@jonyorked</Link>
                 </div>
             </div>
         </>

@@ -232,7 +232,7 @@ export default async function Home() {
         </nav>
         <nav>
           <h6 className="footer-title">Contact</h6>
-          <Link href={"mailto:ravencoinassets.shop@gmail.com"} className="link link-hover">ravencoinassets.shop@gmail.com</Link>
+          <Link href={"mailto:york.jon.2005@gmail.com"} className="link link-hover">york.jon.2005@gmail.com</Link>
           <Link href={"https://twitter.com/jonyorked"} className="link link-hover">Twitter</Link>
         </nav>
       </footer>

@@ -51,6 +51,11 @@ with `https://prompthippo.net.com`.
 After you've set everything up, run the server and take note of the `/invoke` URL of the 
 runnable that you are interested in testing. For me, it's `http://0.0.0.0:8000/invoke`.
 
+## Use NGROK for an SSL URL
+
+Due to the [mixed content policy](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content), browsers do not
+allow HTTP requests to be served 
+
 ## Conntect to Prompt Hippo
 
 Inside the [Prompt Hippo app](/app), click on "Model: ... ⚙️"

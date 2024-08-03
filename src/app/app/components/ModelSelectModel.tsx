@@ -94,7 +94,7 @@ export default function ModelSelectModel(props: {
 
                         <button onClick={() => {
                             if (props.paid) {
-                                let url = prompt('Enter your LangServe URL (i.e. http://localhost:8000/chat/invoke). ONLY /invoke is supported.');
+                                let url = prompt('Enter your LangServe URL (i.e. https://example.com/chat/invoke). ONLY /invoke is supported. Must be HTTPS.');
                                 if (url) {
                                     props.handleModelChange('Custom LangServe 🦜', url);
                                     document.getElementById('my_modal_2').close();
@@ -110,7 +110,7 @@ export default function ModelSelectModel(props: {
                             </div>
                         </button>
                     </div>
-                    <Link href={"/docs/integrate-custom-langserve"} className="underline text-blue-400" target="_blank">Custom LangServe Docs 📚</Link>
+                    <Link href={"/docs/ab-test-custom-langserve"} className="underline text-blue-400" target="_blank">Custom LangServe Docs 📚</Link>
                     <div className="modal-action">
                         <form method="dialog">
                             <button className="btn">Close</button>

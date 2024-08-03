@@ -4,6 +4,7 @@ import Markdown from 'markdown-to-jsx';
 import { Metadata } from 'next';
 import postData from "../PostData";
 
+
 export async function generateMetadata({
     params,
 }): Promise<Metadata> {
@@ -17,7 +18,8 @@ function getPost(slug: string) {
     if (slug.includes('..') || slug.includes('/')) {
         return "# 404 Not Found\n\nSorry!";
     }
-    const folder = './docs/';
+    const folder = '../../../../docs/'; // vercel doens't let u leave root dir anyway
+    // const folder = './src/docs/'; // for local dev
     const file = folder + slug + '.md';
     try {
         return fs.readFileSync(file, 'utf-8');

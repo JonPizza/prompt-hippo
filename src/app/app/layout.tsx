@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "../globals.css";
 import NavBar from "@/components/nav-bar";
 
+import { Toaster } from 'react-hot-toast';
+
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 config.autoAddCss = false;
@@ -25,6 +27,7 @@ export default function RootLayout({
         <div className="mx-12">
           {children}
         </div>
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 
-export default function SimpleModal(props: {children: any, modalId: string}) {
+export default function SimpleModal(props: { children: any, modalId: string }) {
     return (
         <>
             {/* Open the modal using document.getElementById('ID').showModal() method */}

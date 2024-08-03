@@ -17,7 +17,7 @@ function getPost(slug: string) {
     if (slug.includes('..') || slug.includes('/')) {
         return "# 404 Not Found\n\nSorry!";
     }
-    const folder = 'docs/';
+    const folder = './docs/';
     const file = folder + slug + '.md';
     try {
         return fs.readFileSync(file, 'utf-8');

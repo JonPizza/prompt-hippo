@@ -47,6 +47,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
     "react-merge-refs": "^2.1.1",
     "react-tailwindcss-datepicker": "^1.6.6",
     "stripe": "^14.25.0",

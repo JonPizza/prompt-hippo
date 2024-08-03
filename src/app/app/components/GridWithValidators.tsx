@@ -1,9 +1,10 @@
 'use client';
 
-import { json } from "stream/consumers";
 import Grid from "./Grid";
 
 import { useState } from "react";
+import Link from "next/link";
+import ChangeNameButton from "./ChangeNameButton";
 
 const validatorOptions = [
     {
@@ -59,8 +60,15 @@ function ConfigInput(props: { config: any[], validators: any[], validatorIdx: nu
     }
 }
 
-export default function GridWithValidators(props: {paid: boolean}) {
+export default function GridWithValidators(props: {
+    paid: boolean,
+    projectId: number,
+    userId: string,
+    projectData: any
+    projectName: string
+}) {
     const [validators, setValidators] = useState(validatorOptions);
+    const [name, setName] = useState(props.projectName);
 
     const enabledValidators = validators.filter(option => option.enabled);
 
@@ -74,9 +82,21 @@ export default function GridWithValidators(props: {paid: boolean}) {
         <div className="drawer drawer-end">
             <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
+                <Link href={"/profile"} className="link">
+                    ← All Projects
+                </Link>
+
+                <h1 className="text-3xl font-bold my-1 flex items-center gap-2">
+                    {name || 'Untitled Project'}
+                    <ChangeNameButton name={name || 'Untitled Project'} projectId={props.projectId} setName={setName} />
+                </h1>
+                
                 <Grid
                     paid={props.paid}
                     validators={enabledValidators}
+                    projectId={props.projectId}
+                    userId={props.userId}
+                    projectData={props.projectData}
                 >
                     <label htmlFor="my-drawer-4" className="drawer-button btn">Validators: {enabledValidators.length} ⚙️</label>
                 </Grid>

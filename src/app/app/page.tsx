@@ -12,7 +12,13 @@ export default async function AppPage() {
 
     return (
         <div className="w-full">
-            <GridWithValidators paid={true || plan?.type?.startsWith('Pro')} />
+            <GridWithValidators 
+                paid={plan?.type?.startsWith('Pro')} 
+                projectId={-1} 
+                userId={user?.id}
+                projectData={null}
+                projectName={"Unsaved Project"}
+            />
         </div>
     );
 }

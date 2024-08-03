@@ -6,41 +6,57 @@ import ResultsRow from './ResultsRow';
 import InputRow from './InputRow';
 import DividerWButtons from './DividerWButtons';
 import { runAllColumns } from './LangServe';
+import SavePromptsBtn from './SavePromptsBtn';
+import { propagateServerField } from 'next/dist/server/lib/render-server';
 
 // props interface
 interface GridProps {
     paid: boolean;
     validators: any[];
+    projectId: number;
+    userId: string;
     children?: React.ReactNode;
+    projectData?: any;
 }
 
 
-const Grid: React.FC<GridProps> = ({ paid, validators, children }) => {
-    const [messages, setMessages] = useState([
-        {
-            type: 'system',
-            messages: [
-                'You act like a parrot. Squak with every message. Always respond in JSON format, without markdown.',
-                'You are Evil SpongeBob Squarepants. You have made billions in private equity.',
-                'You really really really like ginger ale and can\'t stop talking about it.',
-                'You very obviously have a crush on the person you are talking to, but you are trying to hide it and you are very awkward.'
-            ]
-        },
-        {
-            type: 'human',
-            messages: [
-                'Hello!',
-                'Hello!',
-                'Hello!',
-                'Hello!',
-            ]
-        }
-    ]);
-
+const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, children, projectData }) => {
+    let messages, setMessages;
     const [results, setResults] = useState([]);
+    console.log(results);
+    let model, setModel;
+    let langserveUrl, setLangserveUrl;
+    
+    if (projectData == null) {
+        [messages, setMessages] = useState([
+            {
+                type: 'system',
+                messages: [
+                    'You act like a parrot. Squak with every message. Always respond in JSON format, without markdown.',
+                    'You are Evil SpongeBob Squarepants. You have made billions in private equity.',
+                    'You really really really like ginger ale and can\'t stop talking about it.',
+                    'You very obviously have a crush on the person you are talking to, but you are trying to hide it and you are very awkward.'
+                ]
+            },
+            {
+                type: 'human',
+                messages: [
+                    'Hello!',
+                    'Hello!',
+                    'Hello!',
+                    'Hello!',
+                ]
+            }
+        ]);
 
-    const [model, setModel] = useState('gpt-4o-mini');
-    const [langserveUrl, setLangserveUrl] = useState('https://free.prompthippo.net/gpt-4o-mini/invoke');
+        [model, setModel] = useState('gpt-4o-mini');
+        [langserveUrl, setLangserveUrl] = useState('https://free.prompthippo.net/gpt-4o-mini/invoke');
+    } else {
+        let parsedData = JSON.parse(projectData);
+        [messages, setMessages] = useState(parsedData.messages);
+        [model, setModel] = useState(parsedData.model);
+        [langserveUrl, setLangserveUrl] = useState(parsedData.langserveUrl);
+    }
 
     const handleChange = useCallback((rowIndex: number, colIndex: number, value: string) => {
         setMessages((prevData) => {
@@ -109,7 +125,7 @@ const Grid: React.FC<GridProps> = ({ paid, validators, children }) => {
 
         setResults((prevData) => {
             const newData = [...prevData];
-            if (newData.length == 0) return;
+            if (newData.length == 0) return [];
             newData.forEach((row) => {
                 row.results.push({
                     timeToComplete: NaN,
@@ -188,54 +204,66 @@ const Grid: React.FC<GridProps> = ({ paid, validators, children }) => {
         });
     };
 
+    const collectAllData = () => {
+        return JSON.stringify({
+            messages: messages,
+            model: model,
+            langserveUrl: langserveUrl
+        })
+    }
+
     return (
-        <div className="flex items-center mx-auto">
-            <div className="overflow-x-auto whitespace-nowrap mt-3">
+        <>
+            <SavePromptsBtn getData={collectAllData} projectId={projectId} userId={userId} />
 
-                {messages.map((message_list, idx) => {
-                    return <InputRow
-                        handleChange={handleChange}
-                        handleMsgTypeChange={handleMsgTypeChange}
-                        handleDeleteCol={handleDeleteColumn}
-                        handleDeleteRow={handleDeleteRow}
-                        handleAddCol={handleAddColumn}
-                        horizCopy={handleCopyHorizontal}
-                        rowData={message_list}
-                        rowIdx={idx}
-                        key={idx}
-                    />
-                })}
+            <div className="flex items-center mx-auto parent-scrollbar-top">
+                <div className="child-scrollbar-top whitespace-nowrap mt-3">
 
-                <DividerWButtons
-                    handleAddMessage={handleAddMessage}
-                    handleRunAll={handleRunAll}
-                    handleModelChange={handleModelChange}
-                    model={model}
-                    paid={paid}
-                >
-                    {children}
-                </DividerWButtons>
-                {results.length > 0 ?
-                    (
-                        <div className="rounded mt-2 w-fit">
-                            {results.length > 0 ? results.map((result, idx) => {
-                                return <ResultsRow
-                                    key={idx}
-                                    results={result.results}
-                                    runNumber={result.runNumber}
-                                    appendResults={appendResults}
-                                    validators={validators}
-                                />
-                            }) : <></>}
-                        </div>
-                    ) : (
-                        <div className='w-full text-center'>
-                            Click "Run All 🏃" to run your first comparison!
-                        </div>
-                    )
-                }
+                    {messages.map((message_list, idx) => {
+                        return <InputRow
+                            handleChange={handleChange}
+                            handleMsgTypeChange={handleMsgTypeChange}
+                            handleDeleteCol={handleDeleteColumn}
+                            handleDeleteRow={handleDeleteRow}
+                            handleAddCol={handleAddColumn}
+                            horizCopy={handleCopyHorizontal}
+                            rowData={message_list}
+                            rowIdx={idx}
+                            key={idx}
+                        />
+                    })}
+
+                    <DividerWButtons
+                        handleAddMessage={handleAddMessage}
+                        handleRunAll={handleRunAll}
+                        handleModelChange={handleModelChange}
+                        model={model}
+                        paid={paid}
+                    >
+                        {children}
+                    </DividerWButtons>
+                    {results.length > 0 ?
+                        (
+                            <div className="rounded mt-2 w-fit">
+                                {results.length > 0 ? results.map((result, idx) => {
+                                    return <ResultsRow
+                                        key={idx}
+                                        results={result.results}
+                                        runNumber={result.runNumber}
+                                        appendResults={appendResults}
+                                        validators={validators}
+                                    />
+                                }) : <></>}
+                            </div>
+                        ) : (
+                            <div className='w-full text-center'>
+                                Click "Run All 🏃" to run your first comparison!
+                            </div>
+                        )
+                    }
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

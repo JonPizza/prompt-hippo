@@ -23,7 +23,7 @@ export default function ResultsRow(
                     let validatorResults = result.completed ? props.validators.map((validator) => {
                         return {
                             name: validator.name,
-                            passed: validator.validator(result.response?.output?.content, validator.config)
+                            passed: validator.validator(result.response?.output?.content || '', validator.config)
                         };
                     }) : [];
                     return (

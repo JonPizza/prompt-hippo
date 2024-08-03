@@ -31,9 +31,9 @@ export default async function Home() {
               >
                 Get started
               </Link>
-              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+              <Link href={"https://youtu.be/RD82APpvNTE"} className="text-sm font-semibold leading-6 text-gray-900">
                 View Demo <span>→</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

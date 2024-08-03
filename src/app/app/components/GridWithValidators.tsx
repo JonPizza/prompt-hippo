@@ -88,7 +88,7 @@ export default function GridWithValidators(props: {
 
                 <h1 className="text-3xl font-bold my-1 flex items-center gap-2">
                     {name || 'Untitled Project'}
-                    <ChangeNameButton name={name || 'Untitled Project'} projectId={props.projectId} setName={setName} />
+                    {props.projectId > 0 ? <ChangeNameButton name={name || 'Untitled Project'} projectId={props.projectId} setName={setName} /> : <></>}
                 </h1>
                 
                 <Grid

@@ -54,7 +54,14 @@ runnable that you are interested in testing. For me, it's `http://0.0.0.0:8000/i
 ## Use NGROK for an SSL URL
 
 Due to the [mixed content policy](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content), browsers do not
-allow HTTP requests to be served 
+allow HTTP requests to be served from an HTTPS page. This is a problem if you want to test out a local LangServe instance
+without launching!
+
+Luckily, there is a free service called [https://ngrok.com/](ngrok) which allows you to create a public-facing **HTTPS** url
+which forwards your LangServe instance to the internet.
+
+Learn how to do it in [their quickstart guide](https://ngrok.com/docs/getting-started/). You'll be able to use the URL generated
+to connect to Prompt Hippo.
 
 ## Conntect to Prompt Hippo
 

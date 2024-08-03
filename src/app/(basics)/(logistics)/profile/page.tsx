@@ -29,7 +29,7 @@ export default async function ProfilePage() {
             </h1>
             <Divider />
             {projects.map((project, idx) => (
-                <div key={idx}>
+                <div key={idx} className="m-2 float-left">
                     <div className="card border text-primary-content w-96">
                         <div className="card-body">
                             <h2 className="card-title">{project.name}</h2>
@@ -40,6 +40,10 @@ export default async function ProfilePage() {
                     </div>
                 </div>
             ))}
+            {projects.length > 0 ? (<br className="clear-both"></br>) : (<></>)}
+            <Link href={"/app"} className="btn btn-secondary m-2">
+                Create New Project
+            </Link>
             <Divider />
             <PlanDetails />
             <Divider />

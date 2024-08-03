@@ -18,9 +18,7 @@ function getPost(slug: string) {
     if (slug.includes('..') || slug.includes('/')) {
         return "# 404 Not Found\n\nSorry!";
     }
-    console.log(process.cwd());
-    const folder = process.cwd() + '/docs/'; // vercel doens't let u leave root dir anyway
-    // const folder = './src/docs/'; // for local dev
+    const folder = process.cwd() + '/docs/'; 
     const file = folder + slug + '.md';
     try {
         return fs.readFileSync(file, 'utf-8');

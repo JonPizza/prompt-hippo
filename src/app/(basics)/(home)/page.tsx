@@ -45,7 +45,7 @@ export default async function Home() {
             <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
               Good prompts are <span className="text-amber-600 text-bold">worth GOLD</span>
             </h1>
-            <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 m-16 px-16">
+            <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 m-16 lg:px-16">
               <div className="card bg-white border w-full shadow-xl">
                 <div className="card-body">
                   <h2 className="card-title">
@@ -92,7 +92,7 @@ export default async function Home() {
             <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
               Side-by-side Prompt Testing
             </h1>
-            <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 m-16 px-16">
+            <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 m-16 lg:px-16">
               <div className="grid grid-cols-1 gap-2">
                 <div className="card bg-white border w-full shadow-xl">
                   <div className="card-body">
@@ -175,7 +175,7 @@ export default async function Home() {
             <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
               Get Started
             </h1>
-            <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 m-16 px-16">
+            <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 m-16 lg:px-16">
               <div className="card bg-white border w-full shadow-xl">
                 <div className="card-body">
                   <h2 className="card-title">

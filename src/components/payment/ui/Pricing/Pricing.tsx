@@ -54,8 +54,7 @@ export default function Pricing({ user, products, subscription }: Props) {
     }
 
     const { errorRedirect, sessionId } = await checkoutWithStripe(
-      price,
-      currentPath
+      price
     );
 
     if (errorRedirect) {

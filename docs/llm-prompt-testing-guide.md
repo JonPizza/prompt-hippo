@@ -16,7 +16,7 @@ I've spent hours and hours in my IDE fiddling with prompts while building
 various agents (RAG-based customer support bots, data analyst agents). Here are the mistakes 
 I've made and the suggestions I have for you!
 
-## Being too vauge
+## Mistake: Being too vauge
 
 You need to think about the LLMs world. It does not have any clue what context it is 
 running in! That's why LLM's commonly seems dumb: they output the right thing for their 
@@ -38,7 +38,7 @@ really meant did I get the reports I wanted.
 
 And I only figured it out by...
 
-## Asking the LLM what it needs clarification on
+## Tip: Asking the LLM what it needs clarification on
 
 Try out this prompt for a simple chat app:
 
@@ -58,7 +58,7 @@ and provided me information about what is vauge and what I can update in the pro
 You could even ask the LLM to re-write it's own system prompt to be shorter if you're looking to 
 save on tokens ([GPT-4 is expensive](https://openai.com/api/pricing/)!)
 
-## Improper testing tools
+## Mistake: Improper testing tools
 
 To test my agents, I had put together a quick frontend with [Streamlit](https://streamlit.io/):
 
@@ -85,7 +85,7 @@ See Prompt Hippo 🦛 Demo:
 
 <iframe class="w-full" height="315" src="https://www.youtube.com/embed/RD82APpvNTE?si=wBoWso7GCvRy2ec2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## DO NOT use "DO NOT" or "ONLY"
+## Mistake: Using "DO NOT" or "ONLY"
 
 Time and time again, I've had a one off cases that I had to fix. I figure, easy enough, it's just a one-off case, I'll just
 add a quick "DO NOT do X EVER OR ELSE!!!" Unfortunately, it never works reliably, and there is always some other case that I'd
@@ -96,7 +96,18 @@ Format everything nicely so the LLM can understand what is grouped with what.
 
 Just like dirty code, you can have dirty prompts. You don't have to live that way though. Please, make them clear, obvious, and reliable!
 
-## Look at sample prompts
+## Mistake: Using examples
+
+Yup. Examples sometimes are a great way to get the LLM to output what you want,
+but, unfortunately, examples commonly lead to the LLM generating outputs much more similar
+to the given examples than I'd like, and the LLM will frequently give incorrect responses for
+unexpected input, instead of handling it well.
+
+It's best to write your prompts to be robust, rather than relying on examples. Include all the
+needed context, and the LLM should be able to understand what it needs to do *without examples.*
+It might even save you some tokens too! 
+
+## Tip: Look at sample prompts
 
 My favorite trick that I've found with [ChatGPT](https://chatgpt.com/) was to ask it what
 its system message is. I first used this prompt:

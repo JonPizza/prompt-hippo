@@ -9,7 +9,7 @@ export async function generateMetadata({
     params,
 }): Promise<Metadata> {
     return {
-      title: postData[params.postName]?.title || 'Not found',
+      title: (postData[params.postName]?.title || 'Not found') + ' - Prompt Hippo',
       description: postData[params.postName]?.desc || 'Not found',
     };
   }

@@ -1,5 +1,7 @@
 # LLM Prompt Testing: All Your Mistakes
 
+[Jon York](https://x.com/jonyorked)
+
 Ever since the advent of LLMs, or Large Language Models, like 
 [ChatGPT](https://chatgpt.com/) and [Gemini](https://gemini.google.com/), 
 people have been dedicating time and effort into crafting prompts that

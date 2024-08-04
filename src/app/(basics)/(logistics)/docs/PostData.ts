@@ -10,6 +10,10 @@ const postData = {
     'ab-test-custom-langserve': {
         title: 'AB Test Prompts on a Custom LangServe 🦜 Instance',
         desc: 'Integrate a custom LangServe model into the LangServe playground. - 7/28/24, Jon York',
+    },
+    'prompt-engineer-salary': {
+        title: 'Prompt Engineer Salary - How Much do Prompt Engineers Make?',
+        desc: 'A prompt engineer\'s annual salary is much higher than people might expect for writing English, something anyone can do. - 8/4/24, Jon York',
     }
 }
 

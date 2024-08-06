@@ -71,7 +71,7 @@ export default function ModelSelectModel(props: {
                     <div className="flex flex-wrap gap-2">
                         {freeModels.map((model, idx) => {
                             return (
-                                <button 
+                                <button
                                     key={idx}
                                     onClick={() => { props.handleModelChange(model.name, model.langserve); document.getElementById('my_modal_2').close() }}>
                                     <div className="border rounded-xl shadow-sm font-normal p-2 flex gap-x-2 w-fit hover:bg-base-200">
@@ -83,6 +83,19 @@ export default function ModelSelectModel(props: {
                                 </button>
                             )
                         })}
+                        <button onClick={() => {
+                            let url = prompt('Enter your LangServe URL (i.e. https://example.com/chat/invoke). ONLY /invoke is supported. Must be HTTPS.');
+                            if (url) {
+                                props.handleModelChange('Custom LangServe 🦜', url);
+                                document.getElementById('my_modal_2').close();
+                            }
+                        }}>
+                            <div className="border rounded-xl shadow-sm font-normal p-2 flex gap-x-2 w-fit hover:bg-base-200">
+                                <div>
+                                    Custom LangServe URL 🦜
+                                </div>
+                            </div>
+                        </button>
                     </div>
                     <h3 className="text-lg py-2 font-bold">With Pro (Tokens are EXPENSIVE!)</h3>
                     <div className="flex flex-wrap gap-2">
@@ -107,24 +120,6 @@ export default function ModelSelectModel(props: {
                                 </button>
                             )
                         })}
-
-                        <button onClick={() => {
-                            if (props.paid) {
-                                let url = prompt('Enter your LangServe URL (i.e. https://example.com/chat/invoke). ONLY /invoke is supported. Must be HTTPS.');
-                                if (url) {
-                                    props.handleModelChange('Custom LangServe 🦜', url);
-                                    document.getElementById('my_modal_2').close();
-                                }
-                            } else {
-                                window.open('/pricing', '_blank');
-                            }
-                        }}>
-                            <div className="border rounded-xl shadow-sm font-normal p-2 flex gap-x-2 w-fit hover:bg-base-200">
-                                <div>
-                                    Custom LangServe URL 🦜
-                                </div>
-                            </div>
-                        </button>
                     </div>
                     <Link href={"/docs/ab-test-custom-langserve"} className="underline text-blue-400" target="_blank">Custom LangServe Docs 📚</Link>
                     <div className="modal-action">

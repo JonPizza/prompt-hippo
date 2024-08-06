@@ -32,7 +32,7 @@ export default async function AppPage(props) {
     return (
         <div className="w-full">
             <GridWithValidators
-                paid={plan?.type?.startsWith('Pro')}
+                paid={true}
                 projectId={parseInt(props.params.projectId)}
                 userId={user?.id}
                 projectData={projects[0].data}

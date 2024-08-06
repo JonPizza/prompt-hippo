@@ -10,6 +10,9 @@ export default async function AppPage() {
 
     const plan = await getUserPlan({ uuid: user?.id || '' });
 
+    console.log('user', user);
+    console.log('plan', plan);
+
     return (
         <div className="w-full">
             <GridWithValidators 

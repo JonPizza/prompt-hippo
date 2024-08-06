@@ -13,11 +13,8 @@ export default function ModelSelectModel(props: {
             color: 'green',
             name: 'gpt-4o-mini',
             langserve: baseUrl + '/gpt-4o-mini/invoke'
-        }
-    ]
-
-    const paidModels = [
-        ...['gpt-4o', 'gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo'].map((name) => {
+        },
+        ...['gpt-3.5-turbo'].map((name) => {
             return {
                 company: 'OpenAI',
                 color: 'green',
@@ -25,7 +22,7 @@ export default function ModelSelectModel(props: {
                 langserve: baseUrl + '/' + name + '/invoke'
             }
         }),
-        ...['claude-3-5-sonnet-20240620', 'claude-3-opus-20240229'].map((name) => {
+        ...['claude-3-opus-20240229'].map((name) => {
             return {
                 company: 'Anthropic',
                 color: 'orange',
@@ -41,6 +38,25 @@ export default function ModelSelectModel(props: {
                 langserve: baseUrl + '/' + name + '/invoke'
             }
         })
+    ]
+
+    const paidModels = [
+        ...['gpt-4o', 'gpt-4', 'gpt-4-turbo'].map((name) => {
+            return {
+                company: 'OpenAI',
+                color: 'green',
+                name: name,
+                langserve: baseUrl + '/' + name + '/invoke'
+            }
+        }),
+        ...['claude-3-5-sonnet-20240620'].map((name) => {
+            return {
+                company: 'Anthropic',
+                color: 'orange',
+                name: name,
+                langserve: baseUrl + '/' + name + '/invoke'
+            }
+        }),
     ]
 
     return (
@@ -68,7 +84,7 @@ export default function ModelSelectModel(props: {
                             )
                         })}
                     </div>
-                    <h3 className="text-lg py-2 font-bold">With Pro</h3>
+                    <h3 className="text-lg py-2 font-bold">With Pro (Tokens are EXPENSIVE!)</h3>
                     <div className="flex flex-wrap gap-2">
                         {paidModels.map((model, idx) => {
                             return (

@@ -1,0 +1,1 @@
+src/app/(basics)/(logistics)/pricing/page.tsx removed.

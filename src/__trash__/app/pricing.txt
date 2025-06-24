@@ -1,0 +1,1 @@
+All files from src/app/(basics)/(logistics)/pricing/ moved here for removal.

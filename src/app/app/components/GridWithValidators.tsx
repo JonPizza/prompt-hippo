@@ -61,7 +61,6 @@ function ConfigInput(props: { config: any[], validators: any[], validatorIdx: nu
 }
 
 export default function GridWithValidators(props: {
-    paid: boolean,
     projectId: number,
     userId: string,
     projectData: any
@@ -92,7 +91,6 @@ export default function GridWithValidators(props: {
                 </h1>
                 
                 <Grid
-                    paid={props.paid}
                     validators={enabledValidators}
                     projectId={props.projectId}
                     userId={props.userId}

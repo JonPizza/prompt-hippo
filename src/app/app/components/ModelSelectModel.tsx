@@ -5,16 +5,15 @@ const baseUrl = 'https://free.prompthippo.net'
 export default function ModelSelectModel(props: {
     handleModelChange: Function,
     model: string,
-    paid: boolean
 }) {
-    const freeModels = [
+    const models = [
         {
             company: 'OpenAI',
             color: 'green',
             name: 'gpt-4o-mini',
             langserve: baseUrl + '/gpt-4o-mini/invoke'
         },
-        ...['gpt-3.5-turbo'].map((name) => {
+        ...['gpt-3.5-turbo', 'gpt-4o', 'gpt-4', 'gpt-4-turbo'].map((name) => {
             return {
                 company: 'OpenAI',
                 color: 'green',
@@ -22,7 +21,7 @@ export default function ModelSelectModel(props: {
                 langserve: baseUrl + '/' + name + '/invoke'
             }
         }),
-        ...['claude-3-opus-20240229'].map((name) => {
+        ...['claude-3-opus-20240229', 'claude-3-5-sonnet-20240620'].map((name) => {
             return {
                 company: 'Anthropic',
                 color: 'orange',
@@ -40,36 +39,16 @@ export default function ModelSelectModel(props: {
         })
     ]
 
-    const paidModels = [
-        ...['gpt-4o', 'gpt-4', 'gpt-4-turbo'].map((name) => {
-            return {
-                company: 'OpenAI',
-                color: 'green',
-                name: name,
-                langserve: baseUrl + '/' + name + '/invoke'
-            }
-        }),
-        ...['claude-3-5-sonnet-20240620'].map((name) => {
-            return {
-                company: 'Anthropic',
-                color: 'orange',
-                name: name,
-                langserve: baseUrl + '/' + name + '/invoke'
-            }
-        }),
-    ]
-
     return (
         <>
-            {/* Open the modal using document.getElementById('ID').showModal() method */}
             <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>
                 Model: {props.model} ⚙️
             </button>
             <dialog id="my_modal_2" className="modal w-full">
                 <div className="modal-box">
-                    <h3 className="text-lg py-2 font-bold">Free</h3>
+                    <h3 className="text-lg py-2 font-bold">Models</h3>
                     <div className="flex flex-wrap gap-2">
-                        {freeModels.map((model, idx) => {
+                        {models.map((model, idx) => {
                             return (
                                 <button
                                     key={idx}
@@ -96,30 +75,6 @@ export default function ModelSelectModel(props: {
                                 </div>
                             </div>
                         </button>
-                    </div>
-                    <h3 className="text-lg py-2 font-bold">With Pro (Tokens are EXPENSIVE!)</h3>
-                    <div className="flex flex-wrap gap-2">
-                        {paidModels.map((model, idx) => {
-                            return (
-                                <button
-                                    key={idx}
-                                    onClick={() => {
-                                        if (props.paid) {
-                                            props.handleModelChange(model.name, model.langserve);
-                                            document.getElementById('my_modal_2').close()
-                                        } else {
-                                            window.open('/pricing', '_blank');
-                                        }
-                                    }}>
-                                    <div className="border rounded-xl shadow-sm font-normal p-2 flex gap-x-2 w-fit hover:bg-base-200">
-                                        <div>
-                                            {model.name}
-                                        </div>
-                                        <div className={"badge bg-" + model.color + "-300"}>{model.company}</div>
-                                    </div>
-                                </button>
-                            )
-                        })}
                     </div>
                     <Link href={"/docs/ab-test-custom-langserve"} className="underline text-blue-400" target="_blank">Custom LangServe Docs 📚</Link>
                     <div className="modal-action">

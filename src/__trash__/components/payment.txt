@@ -1,0 +1,1 @@
+All files from src/components/payment/ moved here for removal.

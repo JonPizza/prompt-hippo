@@ -5,13 +5,13 @@ import React, { useState, useCallback } from 'react';
 import ResultsRow from './ResultsRow';
 import InputRow from './InputRow';
 import DividerWButtons from './DividerWButtons';
-import { runAllColumns } from './LangServe';
+import { runAllColumns as runAllColumnsLLM } from './llm-runner';
 import SavePromptsBtn from './SavePromptsBtn';
-import { propagateServerField } from 'next/dist/server/lib/render-server';
+import APIStatus from '@/components/api-status';
+import { getAPIErrorMessage } from '@/utils/api-errors';
 
 // props interface
 interface GridProps {
-    paid: boolean;
     validators: any[];
     projectId: number;
     userId: string;
@@ -20,12 +20,12 @@ interface GridProps {
 }
 
 
-const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, children, projectData }) => {
+const Grid: React.FC<GridProps> = ({ projectId, userId, validators, children, projectData }) => {
     let messages, setMessages;
     const [results, setResults] = useState([]);
-    console.log(results);
     let model, setModel;
-    let langserveUrl, setLangserveUrl;
+    const [apiError, setApiError] = useState<string | null>(null);
+    const [apiLoading, setApiLoading] = useState(false);
     
     if (projectData == null) {
         [messages, setMessages] = useState([
@@ -50,12 +50,10 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
         ]);
 
         [model, setModel] = useState('gpt-4o-mini');
-        [langserveUrl, setLangserveUrl] = useState('https://free.prompthippo.net/gpt-4o-mini/invoke');
     } else {
         let parsedData = JSON.parse(projectData);
         [messages, setMessages] = useState(parsedData.messages);
         [model, setModel] = useState(parsedData.model);
-        [langserveUrl, setLangserveUrl] = useState(parsedData.langserveUrl);
     }
 
     const handleChange = useCallback((rowIndex: number, colIndex: number, value: string) => {
@@ -138,7 +136,9 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
         });
     };
 
-    const handleRunAll = () => {
+    const handleRunAll = async () => {
+        setApiError(null);
+        setApiLoading(true);
         let runNumber;
         setResults((prevData) => {
             const newData = [...prevData];
@@ -157,10 +157,11 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
             return newData;
         });
 
-        runAllColumns(
-            langserveUrl,
-            messages
-        ).then((promises) => {
+        try {
+            const promises = await runAllColumnsLLM(
+                model,
+                messages
+            );
             promises.map((promise) => {
                 promise.then(([columnIdx, result, timeToComplete]) => {
                     setResults((prevData) => {
@@ -175,7 +176,11 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
                     })
                 });
             });
-        });
+        } catch (err) {
+            setApiError(getAPIErrorMessage(err));
+        } finally {
+            setApiLoading(false);
+        }
     };
 
     const appendResults = useCallback((results) => {
@@ -186,9 +191,8 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
         });
     }, []);
 
-    const handleModelChange = useCallback((modelName: string, langserveUrl: string) => {
+    const handleModelChange = useCallback((modelName: string) => {
         setModel(modelName);
-        setLangserveUrl(langserveUrl);
     }, []);
 
     const handleCopyHorizontal = (rowIdx: number, colIdx: number) => {
@@ -207,8 +211,7 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
     const collectAllData = () => {
         return JSON.stringify({
             messages: messages,
-            model: model,
-            langserveUrl: langserveUrl
+            model: model
         })
     }
 
@@ -238,7 +241,6 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
                         handleRunAll={handleRunAll}
                         handleModelChange={handleModelChange}
                         model={model}
-                        paid={paid}
                     >
                         {children}
                     </DividerWButtons>
@@ -263,6 +265,7 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
                     }
                 </div>
             </div>
+            <APIStatus error={apiError} loading={apiLoading} />
         </>
     );
 };

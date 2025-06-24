@@ -186,38 +186,6 @@ const createOrRetrieveCustomer = async ({
   }
 };
 
-const getUserPlan = async ({
-  uuid
-}: {
-  uuid: string;
-}) => {
-  // Check if the customer already exists in Supabase
-  const { data: foundSubscription, error: queryError } =
-    await supabaseAdmin
-      .from('subscriptions')
-      .select('*')
-      .eq('user_id', uuid)
-      .maybeSingle();
-
-  if (queryError || foundSubscription == null) {
-    return {status: 'Free', type: 'Free'};
-  }
-  
-  const { data: priceDetails, error: queeryError } =
-    await supabaseAdmin
-      .from('prices')
-      .select('*')
-      .eq('id', foundSubscription?.price_id || '')
-      .maybeSingle();
-
-  if (queeryError) {
-    return {status: 'Unknown', type: 'Unknown'};
-  }
-
-
-  return { status: foundSubscription?.status, type: priceDetails?.description };
-};
-
 /**
  * Copies the billing details from the payment method to the customer object.
  */
@@ -321,6 +289,5 @@ export {
   deleteProductRecord,
   deletePriceRecord,
   createOrRetrieveCustomer,
-  getUserPlan,
   manageSubscriptionStatusChange
 };

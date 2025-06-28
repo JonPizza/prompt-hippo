@@ -33,7 +33,7 @@ const LLMResponse = React.memo(
                     <div
                         onClick={() => document.getElementById(modalId).showModal()}
                         className="whitespace-pre-wrap w-80 lg:w-96 border rounded p-4 font-normal text-left cursor-pointer hover:bg-base-200 transition duration-150">
-                        {props.response?.output?.content || props.response?.output?.final_response || JSON.stringify(props.response?.output || props.response)}
+                        {props.response?.output?.content || props.response?.output?.final_response || props.response}
                         <br></br>
                         {props.validatorResults.map((result) => {
                             return result.passed ? (

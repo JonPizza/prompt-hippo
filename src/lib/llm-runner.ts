@@ -16,6 +16,9 @@ export async function runAllColumns(model: string, data: any[]) {
   const provider = detectProvider(model);
   if (!hasAPIKey(provider)) throw new Error(`Missing API key for ${provider}`);
 
+  let errorShown = false;
+  let errorMessage = '';
+
   return data[0].messages.map(async (_: any, columnIdx: number) => {
     return new Promise(async (resolve) => {
       let column = getColumn(data, columnIdx);
@@ -31,8 +34,12 @@ export async function runAllColumns(model: string, data: any[]) {
         }
         const timeToComplete = (Date.now() - startTime) / 1000;
         resolve([columnIdx, result, timeToComplete]);
-      } catch (error) {
-        resolve([columnIdx, 'Error occurred!!', (Date.now() - startTime) / 1000]);
+      } catch (error: any) {
+        if (!errorShown) {
+          errorShown = true;
+          errorMessage = error?.message || 'Unknown error';
+        }
+        resolve([columnIdx, { error: true, message: error?.message || 'Error occurred!!' }, (Date.now() - startTime) / 1000]);
       }
     });
   });

@@ -1,9 +1,17 @@
 import { getAPIKeys } from '@/lib/api-keys';
+import { models } from '@/lib/llm-models';
 
 export async function callOpenAI(model: string, messages: any[]) {
   const { openai } = getAPIKeys();
   if (!openai) throw new Error('Missing OpenAI API key');
   const url = 'https://api.openai.com/v1/chat/completions';
+  
+  // Convert message format: type -> role for OpenAI API
+  const openaiMessages = messages.map(msg => ({
+    role: msg.type === 'system' ? 'system' : msg.type === 'human' ? 'user' : 'assistant',
+    content: msg.content
+  }));
+  
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -12,11 +20,15 @@ export async function callOpenAI(model: string, messages: any[]) {
     },
     body: JSON.stringify({
       model,
-      messages,
+      messages: openaiMessages,
     }),
   });
-  if (!res.ok) throw new Error('OpenAI API error');
-  return res.json();
+  if (!res.ok) {
+    let apiOutput = await res.text();
+    throw new Error(`OpenAI API error: ${apiOutput}`);
+  }
+  const data = await res.json();
+  return data.choices[0].message.content;
 }
 
 export async function callAnthropic(model: string, messages: any[]) {
@@ -31,6 +43,7 @@ export async function callAnthropic(model: string, messages: any[]) {
       'Content-Type': 'application/json',
       'x-api-key': anthropic,
       'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
       model,
@@ -38,17 +51,27 @@ export async function callAnthropic(model: string, messages: any[]) {
       messages: [
         { role: 'user', content: user }
       ],
-      max_tokens: 1024,
+      max_tokens: getMaxTokens(model),
     }),
   });
-  if (!res.ok) throw new Error('Anthropic API error');
-  return res.json();
+  if (!res.ok) {
+    let apiOutput = await res.text();
+    throw new Error(`Anthropic API error: ${apiOutput}`);
+  }
+  let json = await res.json();
+  console.log(JSON.stringify(json));
+  return json.content[0].text;
 }
 
 export async function callGroq(model: string, messages: any[]) {
   const { groq } = getAPIKeys();
   if (!groq) throw new Error('Missing Groq API key');
   const url = 'https://api.groq.com/openai/v1/chat/completions';
+  // Convert message format: type -> role for Groq API
+  const groqMessages = messages.map(msg => ({
+    role: msg.type === 'system' ? 'system' : msg.type === 'human' ? 'user' : 'assistant',
+    content: msg.content
+  }));
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -57,16 +80,33 @@ export async function callGroq(model: string, messages: any[]) {
     },
     body: JSON.stringify({
       model,
-      messages,
+      messages: groqMessages,
     }),
   });
-  if (!res.ok) throw new Error('Groq API error');
-  return res.json();
+  if (!res.ok) {
+    let apiOutput = await res.text();
+    throw new Error(`Groq API error: ${apiOutput}`);
+  }
+  return (await res.json()).choices[0].message.content;
 }
 
 export function detectProvider(model: string): 'openai' | 'anthropic' | 'groq' {
-  if (model.startsWith('gpt')) return 'openai';
-  if (model.startsWith('claude')) return 'anthropic';
-  if (model.startsWith('llama') || model.startsWith('mixtral')) return 'groq';
+  const found = models.find((m) => m.name === model);
+  if (!found) throw new Error('Unknown model/provider');
+  if (found.company === 'OpenAI') return 'openai';
+  if (found.company === 'Anthropic') return 'anthropic';
+  if (found.company === 'Groq') return 'groq';
   throw new Error('Unknown model/provider');
+}
+
+export function getMaxTokens(model: string): number {
+  const found = models.find((m) => m.name === model);
+  if (!found) throw new Error('Unknown model');
+  
+  // Only use model-specific max_tokens for Anthropic models
+  if (found.company === 'Anthropic' && 'max_tokens' in found && found.max_tokens) {
+    return found.max_tokens;
+  }
+  
+  return 4096; // fallback
 }

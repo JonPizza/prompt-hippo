@@ -27,13 +27,13 @@ reasons. You can learn more about CORS [on the Mozilla docs](https://developer.m
 
 Inside of `app/server.py`, add this import:
 
-```
+```sh
 from fastapi.middleware.cors import CORSMiddleware
 ```
 
 And these lines:
 
-```
+```sh
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

@@ -21,7 +21,6 @@ export default function ProfileDropdown({
                 <li><Link href="/app">App</Link></li>
                 <li></li>
                 <li><LogoutButton /></li>
-                <li><Link href="/pricing">Pricing</Link></li>
             </ul>
         </div>
     );

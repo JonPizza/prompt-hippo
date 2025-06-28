@@ -1,1 +1,0 @@
-src/app/(basics)/(logistics)/pricing/loading.tsx removed.

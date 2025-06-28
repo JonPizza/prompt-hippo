@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from 'react';
 
 export default function APIStatus({ error, loading }: { error?: string; loading?: boolean }) {

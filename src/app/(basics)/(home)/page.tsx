@@ -228,7 +228,6 @@ export default async function Home() {
           <Link href={"/app"} className="link link-hover">App</Link>
           <Link href={"/docs"} className="link link-hover">Documentation</Link>
           <Link href={"/auth/login"} className="link link-hover">Login / Sign up</Link>
-          <Link href={"/pricing"} className="link link-hover">Pricing</Link>
         </nav>
         <nav>
           <h6 className="footer-title">Contact</h6>

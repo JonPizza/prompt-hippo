@@ -1,17 +1,32 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import ResultsRow from './ResultsRow';
 import InputRow from './InputRow';
 import DividerWButtons from './DividerWButtons';
-import { runAllColumns } from './LangServe';
+import { runAllColumns as runAllColumnsLLM } from '../../../lib/llm-runner';
 import SavePromptsBtn from './SavePromptsBtn';
-import { propagateServerField } from 'next/dist/server/lib/render-server';
+import APIStatus from '@/components/api-status';
+import { getAPIErrorMessage } from '@/utils/api-errors';
+import APIKeyModal from '@/components/api-key-modal';
+import { ErrorBoundary } from '@/components/error-boundary';
+
+// Loading component for grid initialization
+function GridInitializing() {
+    return (
+        <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+                <span className="loading loading-spinner loading-lg"></span>
+                <p className="mt-4 text-lg">Initializing project...</p>
+                <p className="text-sm opacity-70">Setting up your workspace</p>
+            </div>
+        </div>
+    );
+}
 
 // props interface
 interface GridProps {
-    paid: boolean;
     validators: any[];
     projectId: number;
     userId: string;
@@ -20,12 +35,32 @@ interface GridProps {
 }
 
 
-const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, children, projectData }) => {
+const Grid: React.FC<GridProps> = ({ projectId, userId, validators, children, projectData }) => {
     let messages, setMessages;
     const [results, setResults] = useState([]);
-    console.log(results);
     let model, setModel;
-    let langserveUrl, setLangserveUrl;
+    const [apiError, setApiError] = useState<string | null>(null);
+    const [apiLoading, setApiLoading] = useState(false);
+    const [showKeyModal, setShowKeyModal] = useState(false);
+    
+    // Add initialization loading state
+    const [isInitializing, setIsInitializing] = useState(true);
+    
+    // Initialize data with loading state
+    useEffect(() => {
+        const initializeGrid = async () => {
+            try {
+                // Simulate initialization time for better UX
+                await new Promise(resolve => setTimeout(resolve, 300));
+                setIsInitializing(false);
+            } catch (error) {
+                console.error('Grid initialization error:', error);
+                setIsInitializing(false);
+            }
+        };
+        
+        initializeGrid();
+    }, [projectData]);
     
     if (projectData == null) {
         [messages, setMessages] = useState([
@@ -50,12 +85,10 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
         ]);
 
         [model, setModel] = useState('gpt-4o-mini');
-        [langserveUrl, setLangserveUrl] = useState('https://free.prompthippo.net/gpt-4o-mini/invoke');
     } else {
         let parsedData = JSON.parse(projectData);
         [messages, setMessages] = useState(parsedData.messages);
         [model, setModel] = useState(parsedData.model);
-        [langserveUrl, setLangserveUrl] = useState(parsedData.langserveUrl);
     }
 
     const handleChange = useCallback((rowIndex: number, colIndex: number, value: string) => {
@@ -138,7 +171,9 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
         });
     };
 
-    const handleRunAll = () => {
+    const handleRunAll = async () => {
+        setApiError(null);
+        setApiLoading(true);
         let runNumber;
         setResults((prevData) => {
             const newData = [...prevData];
@@ -157,38 +192,71 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
             return newData;
         });
 
-        runAllColumns(
-            langserveUrl,
-            messages
-        ).then((promises) => {
-            promises.map((promise) => {
+        try {
+            const promises = await runAllColumnsLLM(
+                model,
+                messages
+            );
+            
+            // Process results as they come in instead of waiting for all
+            promises.forEach((promise, index) => {
                 promise.then(([columnIdx, result, timeToComplete]) => {
+                    // Check for error in this specific result
+                    if (typeof result === 'object' && result?.error) {
+                        alert(`An error occurred in column ${columnIdx + 1}. Here is the API output: ${result.message}`);
+                    }
+                    
                     setResults((prevData) => {
                         const newData = [...prevData];
-                        newData.find((el) => el.runNumber === runNumber).results[columnIdx] = {
-                            timeToComplete: timeToComplete,
-                            response: result,
-                            model: model,
-                            completed: true
-                        };
+                        const currentRun = newData.find((el) => el.runNumber === runNumber);
+                        if (currentRun) {
+                            currentRun.results[columnIdx] = {
+                                timeToComplete: timeToComplete,
+                                response: typeof result === 'object' && result?.error ? result.message : result,
+                                model: model,
+                                completed: true
+                            };
+                        }
                         return newData;
-                    })
+                    });
+                }).catch((error) => {
+                    // Handle individual promise errors
+                    console.error(`Error in column ${index}:`, error);
+                    setResults((prevData) => {
+                        const newData = [...prevData];
+                        const currentRun = newData.find((el) => el.runNumber === runNumber);
+                        if (currentRun) {
+                            currentRun.results[index] = {
+                                timeToComplete: 0,
+                                response: `Error: ${error.message || 'Unknown error'}`,
+                                model: model,
+                                completed: true
+                            };
+                        }
+                        return newData;
+                    });
                 });
             });
-        });
+
+            // Still wait for all promises to complete before clearing loading state
+            await Promise.all(promises);
+        } catch (err) {
+            setApiError(getAPIErrorMessage(err));
+        } finally {
+            setApiLoading(false);
+        }
     };
 
     const appendResults = useCallback((results) => {
         setMessages((prevData) => {
             const newData = [...prevData];
-            newData.push({ type: 'ai', messages: results.map((result) => result.response?.output?.content || '') });
+            newData.push({ type: 'ai', messages: results.map((result) => result.response?.output?.content || result.response?.output?.final_response || result.response) });
             return newData;
         });
     }, []);
 
-    const handleModelChange = useCallback((modelName: string, langserveUrl: string) => {
+    const handleModelChange = useCallback((modelName: string) => {
         setModel(modelName);
-        setLangserveUrl(langserveUrl);
     }, []);
 
     const handleCopyHorizontal = (rowIdx: number, colIdx: number) => {
@@ -207,63 +275,71 @@ const Grid: React.FC<GridProps> = ({ paid, projectId, userId, validators, childr
     const collectAllData = () => {
         return JSON.stringify({
             messages: messages,
-            model: model,
-            langserveUrl: langserveUrl
+            model: model
         })
     }
 
     return (
-        <>
-            <SavePromptsBtn getData={collectAllData} projectId={projectId} userId={userId} />
+        <ErrorBoundary>
+            {isInitializing ? (
+                <GridInitializing />
+            ) : (
+                <>
+                    <SavePromptsBtn getData={collectAllData} projectId={projectId} userId={userId} />
 
-            <div className="flex items-center mx-auto parent-scrollbar-top">
-                <div className="child-scrollbar-top whitespace-nowrap mt-3">
+                    <div className="flex items-center mx-auto parent-scrollbar-top">
+                        <div className="child-scrollbar-top whitespace-nowrap mt-3">
 
-                    {messages.map((message_list, idx) => {
-                        return <InputRow
-                            handleChange={handleChange}
-                            handleMsgTypeChange={handleMsgTypeChange}
-                            handleDeleteCol={handleDeleteColumn}
-                            handleDeleteRow={handleDeleteRow}
-                            handleAddCol={handleAddColumn}
-                            horizCopy={handleCopyHorizontal}
-                            rowData={message_list}
-                            rowIdx={idx}
-                            key={idx}
-                        />
-                    })}
+                            {messages.map((message_list, idx) => {
+                                return <InputRow
+                                    handleChange={handleChange}
+                                    handleMsgTypeChange={handleMsgTypeChange}
+                                    handleDeleteCol={handleDeleteColumn}
+                                    handleDeleteRow={handleDeleteRow}
+                                    handleAddCol={handleAddColumn}
+                                    horizCopy={handleCopyHorizontal}
+                                    rowData={message_list}
+                                    rowIdx={idx}
+                                    key={idx}
+                                />
+                            })}
 
-                    <DividerWButtons
-                        handleAddMessage={handleAddMessage}
-                        handleRunAll={handleRunAll}
-                        handleModelChange={handleModelChange}
-                        model={model}
-                        paid={paid}
-                    >
-                        {children}
-                    </DividerWButtons>
-                    {results.length > 0 ?
-                        (
-                            <div className="rounded mt-2 w-fit">
-                                {results.length > 0 ? results.map((result, idx) => {
-                                    return <ResultsRow
-                                        key={idx}
-                                        results={result.results}
-                                        runNumber={result.runNumber}
-                                        appendResults={appendResults}
-                                        validators={validators}
-                                    />
-                                }) : <></>}
-                            </div>
-                        ) : (
-                            <div className='w-full text-center'>
-                                Click "Run All 🏃" to run your first comparison!
-                            </div>
-                        )
-                    }
-                </div>
-            </div>
-        </>
+                            <DividerWButtons
+                                handleAddMessage={handleAddMessage}
+                                handleRunAll={handleRunAll}
+                                handleModelChange={handleModelChange}
+                                model={model}
+                                showKeyModal={showKeyModal}
+                                setShowKeyModal={setShowKeyModal}
+                            >
+                                {children}
+                            </DividerWButtons>
+                            {results.length > 0 ?
+                                (
+                                    <div className="rounded mt-2 w-fit">
+                                        {results.length > 0 ? results.map((result, idx) => {
+                                            return <ResultsRow
+                                                key={idx}
+                                                results={result.results}
+                                                runNumber={result.runNumber}
+                                                appendResults={appendResults}
+                                                validators={validators}
+                                            />
+                                        }) : <></>}
+                                    </div>
+                                ) : (
+                                    <div className='w-full text-center'>
+                                        Click "Run All 🏃" to run your first comparison!
+                                    </div>
+                                )
+                            }
+                        </div>
+                    </div>
+                    <APIStatus error={apiError} loading={apiLoading} />
+                    <APIKeyModal open={showKeyModal} onClose={() => setShowKeyModal(false)} />
+                </>
+            )}
+        </ErrorBoundary>
     );
 };
 

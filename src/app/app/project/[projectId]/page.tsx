@@ -1,5 +1,4 @@
 import { createSupabaseServerComponentClient } from "@/lib/supabase/server-client";
-import { getUserPlan } from "@/utils/supabase/admin";
 import GridWithValidators from "@/app/app/components/GridWithValidators";
 import Link from "next/link";
 
@@ -10,8 +9,6 @@ export default async function AppPage(props) {
         data: { user },
         error,
     } = await client.auth.getUser();
-
-    const plan = await getUserPlan({ uuid: user?.id || '' });
 
     const { data: projects, error: projectsError } = await client
         .from('projects')
@@ -32,7 +29,6 @@ export default async function AppPage(props) {
     return (
         <div className="w-full">
             <GridWithValidators
-                paid={true}
                 projectId={parseInt(props.params.projectId)}
                 userId={user?.id}
                 projectData={projects[0].data}

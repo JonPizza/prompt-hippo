@@ -13,7 +13,7 @@ you can add in custom tools, better monitor your agent's performance, quickly de
 
 To install LangServe, use pip:
 
-```
+```sh
 pip install "langserve[all]"
 ```
 
@@ -21,7 +21,7 @@ After installation, you can create a new app by running `langchain app new my-ap
 will create a LangServe project inside of the directory `my-app`. The default project
 structure will look like this:
 
-```
+```sh
 .
 ├── app
 │   ├── __init__.py
@@ -41,13 +41,13 @@ install the dependencies, run `poetry install` in the root directory of the proj
 
 We will also be using OpenAI's LLMs for this tutorial, so install the relevant LangChain module as well:
 
-```
+```sh
 poetry add langchain-openai
 ```
 
 After, we can try running the server!
 
-```
+```sh
 jon@pizza:~/my-app$ poetry run python3 app/server.py
 Traceback (most recent call last):
   File "/home/jon/my-app/app/server.py", line 14, in <module>
@@ -63,7 +63,7 @@ Ahhh... rats.
 
 In `app/server.py`, the default call to `add_routes` is done with `NotImplemented`:
 
-```
+```py
 add_routes(app, NotImplemented)
 ```
 
@@ -76,7 +76,7 @@ Create a new directory inside `app/` and call it `agents/`, and don't forget to 
 so that we can import from it! Inside the `agents/` directory, create a `basic_agent.py` file, which is where we will create
 our first runnable. (Exciting, I know!) 
 
-```
+```py
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
@@ -100,19 +100,19 @@ You can read more about creating advanced runnables [here](https://python.langch
 
 Import your runnable to the server by adding an import statement at the top:
 
-```
+```py
 from app.agents.basic_agent import runnable
 ```
 
 Then, put the runnable in the `add_routes` function:
 
-```
+```py
 add_routes(app, runnable)
 ```
 
 Finally, we get to run the server! 🥳🥳
 
-```
+```sh
 jon@pizza:~/my-app$ poetry run python3 app/server.py
 INFO:     Started server process [45386]
 INFO:     Waiting for application startup.
@@ -149,13 +149,13 @@ similar to the chatbots that we are already familiar with.
 
 It's easy to use, just change the call to `add_routes` from:
 
-```
+```py
 add_routes(app, runnable)
 ```
 
 To
 
-```
+```py
 add_routes(app, runnable, playground_type='chat')
 ```
 
@@ -166,7 +166,7 @@ Just like that, we've got a playground that's 10x nicer:
 Also, if you want a playground that's **100x** nicer, check out
 [Prompt Hippo](/). It allows you to interface with custom langserve 
 instances and test prompts side-by-side-by-side-by-side-by... well,
-you get the point. It's free to use with `gpt-4o-mini`. Stop creating prompts
+you get the point. It's free to use. Stop creating prompts
 on vibes 🏖️... use science 🧪!
 
 ![Prompt Hippo user interface](/images/jp-ui.png)

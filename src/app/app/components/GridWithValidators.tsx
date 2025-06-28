@@ -1,8 +1,10 @@
 'use client';
 
 import Grid from "./Grid";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { LoadingState } from "@/components/common/loading-states";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import ChangeNameButton from "./ChangeNameButton";
 
@@ -39,10 +41,20 @@ const validatorOptions = [
 ];
 
 function ConfigInput(props: { config: any[], validators: any[], validatorIdx: number, setValidators: Function }) {
-    function updateValidatorsConfig(idx: number, configIdx, newValue) {
-        const newValidators = [...props.validators];
-        newValidators[idx].config[configIdx].value = newValue;
-        props.setValidators(newValidators);
+    function updateValidatorsConfig(idx: number, configIdx: number, newValue: string) {
+        try {
+            const newValidators = [...props.validators];
+            if (newValidators[idx] && newValidators[idx].config && newValidators[idx].config[configIdx]) {
+                newValidators[idx].config[configIdx].value = newValue;
+                props.setValidators(newValidators);
+            }
+        } catch (error) {
+            console.error('Error updating validator config:', error);
+        }
+    }
+
+    if (!props.config || !Array.isArray(props.config)) {
+        return <div>Invalid configuration</div>;
     }
 
     for (let i = 0; i < props.config.length; i++) {
@@ -61,7 +73,6 @@ function ConfigInput(props: { config: any[], validators: any[], validatorIdx: nu
 }
 
 export default function GridWithValidators(props: {
-    paid: boolean,
     projectId: number,
     userId: string,
     projectData: any
@@ -73,58 +84,89 @@ export default function GridWithValidators(props: {
     const enabledValidators = validators.filter(option => option.enabled);
 
     function toggleValidator(idx: number) {
-        const newValidators = [...validators];
-        newValidators[idx].enabled = !newValidators[idx].enabled;
-        setValidators(newValidators);
+        try {
+            if (idx >= 0 && idx < validators.length) {
+                const newValidators = [...validators];
+                newValidators[idx].enabled = !newValidators[idx].enabled;
+                setValidators(newValidators);
+            }
+        } catch (error) {
+            console.error('Error toggling validator:', error);
+        }
     }
 
     return (
-        <div className="drawer drawer-end">
-            <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content">
-                <Link href={"/profile"} className="link">
-                    ← All Projects
-                </Link>
+        <ErrorBoundary>
+            <div className="drawer drawer-end">
+                <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+                <div className="drawer-content">
+                    <Link href={"/profile"} className="link">
+                        ← All Projects
+                    </Link>
 
-                <h1 className="text-3xl font-bold my-1 flex items-center gap-2">
-                    {name || 'Untitled Project'}
-                    {props.projectId > 0 ? <ChangeNameButton name={name || 'Untitled Project'} projectId={props.projectId} setName={setName} /> : <></>}
-                </h1>
-                
-                <Grid
-                    paid={props.paid}
-                    validators={enabledValidators}
-                    projectId={props.projectId}
-                    userId={props.userId}
-                    projectData={props.projectData}
-                >
-                    <label htmlFor="my-drawer-4" className="drawer-button btn">Validators: {enabledValidators.length} ⚙️</label>
-                </Grid>
-            </div>
-            <div className="drawer-side">
-                <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-                <ul className="menu bg-base-200 text-base-content min-h-full w-80 lg:w-[800px] p-12">
-                    <div className="font-bold text-2xl">Configure Validators <div className="badge badge-warning">BETA</div></div>
-                    {validators.map((option, idx) => {
-                        return (
-                            <div key={idx} className="m-4 border border-base-300 rounded-xl p-4 gap-4 grid grid-cols-1">
-                                <div className="font-bold text-lg"><input type="checkbox" defaultChecked={option.enabled} onClick={
-                                    (e) => { toggleValidator(idx) }
-                                } /> {option.name}</div>
-                                <div>
-                                    {option.description}
-                                </div>
-                                <ConfigInput 
-                                    config={option.config} 
-                                    validators={validators}
-                                    validatorIdx={idx}
-                                    setValidators={setValidators}
+                    <h1 className="text-3xl font-bold my-1 flex items-center gap-2">
+                        {name || 'Untitled Project'}
+                        {props.projectId > 0 ? (
+                            <ErrorBoundary fallback={<span className="text-sm text-error">Error loading name editor</span>}>
+                                <ChangeNameButton 
+                                    name={name || 'Untitled Project'} 
+                                    projectId={props.projectId} 
+                                    setName={setName} 
                                 />
-                            </div>
-                        );
-                    })}
-                </ul>
+                            </ErrorBoundary>
+                        ) : null}
+                    </h1>
+                    
+                    <Suspense fallback={
+                        <LoadingState message="Loading project..." size="lg" />
+                    }>
+                        <Grid
+                            validators={enabledValidators}
+                            projectId={props.projectId}
+                            userId={props.userId}
+                            projectData={props.projectData}
+                        >
+                            <label htmlFor="my-drawer-4" className="drawer-button btn">
+                                Validators: {enabledValidators.length} ⚙️
+                            </label>
+                        </Grid>
+                    </Suspense>
+                </div>
+                <div className="drawer-side">
+                    <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
+                    <ul className="menu bg-base-200 text-base-content min-h-full w-80 lg:w-[800px] p-12">
+                        <div className="font-bold text-2xl">
+                            Configure Validators <div className="badge badge-warning">BETA</div>
+                        </div>
+                        <ErrorBoundary fallback={<div className="text-error">Error loading validators</div>}>
+                            {validators.map((option, idx) => {
+                                return (
+                                    <div key={idx} className="m-4 border border-base-300 rounded-xl p-4 gap-4 grid grid-cols-1">
+                                        <div className="font-bold text-lg">
+                                            <input 
+                                                type="checkbox" 
+                                                defaultChecked={option.enabled} 
+                                                onChange={() => toggleValidator(idx)}
+                                            /> {option.name}
+                                        </div>
+                                        <div>
+                                            {option.description}
+                                        </div>
+                                        <ErrorBoundary fallback={<div className="text-sm text-error">Error loading config</div>}>
+                                            <ConfigInput 
+                                                config={option.config} 
+                                                validators={validators}
+                                                validatorIdx={idx}
+                                                setValidators={setValidators}
+                                            />
+                                        </ErrorBoundary>
+                                    </div>
+                                );
+                            })}
+                        </ErrorBoundary>
+                    </ul>
+                </div>
             </div>
-        </div>
+        </ErrorBoundary>
     );
 }
